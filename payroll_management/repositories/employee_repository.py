@@ -61,14 +61,20 @@ def delete_employee(employee_id):
                 query=""" DELETE FROM employees WHERE employee_id = %s"""
 
                 cursor.execute(query,(employee_id,))
- 
-        
+                
+
+                if cursor.rowcount == 0:
+                    return {
+                        "message": "Employee not found",
+                        "employee_id": employee_id
+                    }
+
                 connection.commit()
 
-                return{
-                            "message":"Employee deleted",
-                            "EmployeeId" : employee_id
-                        }
+                return {
+                    "message": "Employee deleted successfully",
+                    "employee_id": employee_id
+                }
                 
     except Exception as er:
             raise EmployeeRepositoryError( f"Iusse in repositry : {er}")
