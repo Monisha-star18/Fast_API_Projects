@@ -45,8 +45,12 @@ payroll_management/
 ```bash
 
 python -m venv .venv
+
+```
+
+```bash
+
 .venv\Scripts\activate        # Windows
-source .venv/bin/activate     # Linux / macOS
 
 ```
 
