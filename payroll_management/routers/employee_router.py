@@ -20,6 +20,7 @@ async def get_employees():
     return await get_all_employees()
 
 
+
 #post the detailes 
 @router.post("/")
 async def create_new_employee(employee_data : CreateEmployee):
@@ -41,6 +42,7 @@ async def update_employee_detailes(
 async def remove_employee(employee_id : int =Path(gt=0) ):
 
     return await remove_employee_byid(employee_id)
+
 
 #get one employee by id
 @router.get("/{employee_id}")
