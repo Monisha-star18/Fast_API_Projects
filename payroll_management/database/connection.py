@@ -1,10 +1,10 @@
-import psycopg
+from psycopg import AsyncConnection
 
 from config import Config
 
-def get_connection():
+async def get_connection():
 
-    connection = psycopg.connect(
+    connection = await AsyncConnection.connect(
         host = Config.DB_HOST,
         port = Config.DB_PORT,
         dbname = Config.DB_NAME,

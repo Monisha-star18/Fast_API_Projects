@@ -1,19 +1,21 @@
 from database.connection import get_connection
 from exceptions.employee_exceptions import EmployeeRepositoryError
 
-def fetch_all_employees():
+async def fetch_all_employees():
 
     try:
-        with get_connection() as connection : #create the database connection 
-            with connection.cursor() as cursor :  #creating the cursor to write the sql 
+        connection = await get_connection()
+
+        async with connection:
+            async with connection.cursor() as cursor :  #creating the cursor to write the sql 
 
                 query = """ SELECT * FROM employees """
 
-                cursor.execute (query) #Send SQL command to database
+                await cursor.execute (query) #Send SQL command to database
 
                 columns = [column.name for column in cursor.description] # get all the column names using description 
 
-                employees_data = cursor.fetchall() #Gets all rows returned by the query
+                employees_data = await cursor.fetchall() #Gets all rows returned by the query
 
                 return columns , employees_data 
             
@@ -21,10 +23,12 @@ def fetch_all_employees():
         raise EmployeeRepositoryError( f"Iusse in repositry : {er}")
     
 
-def post_new_employee(employee):
+async def post_new_employee(employee):
     try:
-        with get_connection() as connection : 
-            with connection.cursor() as cursor :  
+        connection = await get_connection()
+        
+        async with connection:
+            async with connection.cursor() as cursor :  
 
                 query = """ INSERT INTO employees ( 
                             employee_id,
@@ -38,9 +42,9 @@ def post_new_employee(employee):
                            employee["EmployeeBasicSalary"], employee["PF"],
                            employee["DA"], employee["GrossSalary"])
 
-                cursor.execute(query,values)
+                await cursor.execute(query,values)
 
-                connection.commit()
+                await connection.commit()
 
                 return {
                         "message":"Employee Created",
@@ -53,23 +57,25 @@ def post_new_employee(employee):
         raise EmployeeRepositoryError( f"Iusse in repositry : {er}")
             
 
-def delete_employee(employee_id):
+async def delete_employee(employee_id):
     try:
-        with get_connection() as connection : 
-            with connection.cursor() as cursor :
+        connection = await get_connection()
+        
+        async with connection:
+            async with connection.cursor() as cursor :
 
                 query=""" DELETE FROM employees WHERE employee_id = %s"""
 
-                cursor.execute(query,(employee_id,))
+                await cursor.execute(query,(employee_id,))
                 
 
-                if cursor.rowcount == 0:
+                if await cursor.rowcount == 0:
                     return {
                         "message": "Employee not found",
                         "employee_id": employee_id
                     }
 
-                connection.commit()
+                await connection.commit()
 
                 return {
                     "message": "Employee deleted successfully",

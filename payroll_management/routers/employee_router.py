@@ -1,7 +1,7 @@
 from fastapi import APIRouter,Path
 
 from services.employee_service import get_all_employees , create_employee , remove_employee_byid
-from models.employee_model import CreateEmployee
+from schemas.employee_schema import CreateEmployee
 
 router = APIRouter( prefix="/api/employees")
 
