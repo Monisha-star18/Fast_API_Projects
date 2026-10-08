@@ -3,7 +3,7 @@ from exceptions.employee_exceptions import EmployeeRepositoryError
 from psycopg.errors import UniqueViolation
 from fastapi import HTTPException
 
-
+#get all employee
 async def fetch_all_employees():
 
     try:
@@ -25,7 +25,7 @@ async def fetch_all_employees():
     except Exception as er :
         raise EmployeeRepositoryError( f"Iusse in repositry : {er}")
     
-
+#create new employees
 async def post_new_employee(employee):
     try:
         connection = await get_connection()
@@ -62,35 +62,7 @@ async def post_new_employee(employee):
              detail=f"Employee with ID {employee['EmployeeId']} already exists")
             
 
-async def delete_employee(employee_id):
-    try:
-        connection = await get_connection()
-        
-        async with connection:
-            async with connection.cursor() as cursor :
-
-                query=""" DELETE FROM employees WHERE employee_id = %s"""
-
-                await cursor.execute(query,(employee_id,))
-                
-
-                if cursor.rowcount == 0:
-                    return {
-                        "message": "Employee not found",
-                        "employee_id": employee_id
-                    }
-
-                await connection.commit()
-
-                return {
-                    "message": "Employee deleted successfully",
-                    "employee_id": employee_id
-                }
-                
-    except Exception as er:
-            raise EmployeeRepositoryError( f"Iusse in repositry : {er}")
-                
-
+#update employees
 async def put_employee(employee_data,employee_id):
     try:
         connection = await get_connection()
@@ -131,3 +103,33 @@ async def put_employee(employee_data,employee_id):
                 raise EmployeeRepositoryError( f"Iusse in repositry : {er}")
 
 
+#delete employees 
+
+async def delete_employee(employee_id):
+    try:
+        connection = await get_connection()
+        
+        async with connection:
+            async with connection.cursor() as cursor :
+
+                query=""" DELETE FROM employees WHERE employee_id = %s"""
+
+                await cursor.execute(query,(employee_id,))
+                
+
+                if cursor.rowcount == 0:
+                    return {
+                        "message": "Employee not found",
+                        "employee_id": employee_id
+                    }
+
+                await connection.commit()
+
+                return {
+                    "message": "Employee deleted successfully",
+                    "employee_id": employee_id
+                }
+                
+    except Exception as er:
+            raise EmployeeRepositoryError( f"Iusse in repositry : {er}")
+                

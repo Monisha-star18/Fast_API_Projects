@@ -1,6 +1,5 @@
 from fastapi import APIRouter,Path
 
-
 from schemas.employee_schema import (CreateEmployee , UpdateEmployee)
 
 from services.employee_service import (
@@ -26,12 +25,6 @@ async def create_new_employee(employee_data : CreateEmployee):
 
     return await create_employee(employee_data)
 
-#delect an employee
-@router.delete('/{employee_id}')
-async def remove_employee(employee_id : int =Path(gt=0) ):
-
-    return await remove_employee_byid(employee_id)
-
 #update the whole employee 
 @router.put('/{employee_id}')
 async def update_employee_detailes( 
@@ -40,3 +33,10 @@ async def update_employee_detailes(
     ):
 
     return await update_employee(employee_data,employee_id)
+
+
+#delect an employee
+@router.delete('/{employee_id}')
+async def remove_employee(employee_id : int =Path(gt=0) ):
+
+    return await remove_employee_byid(employee_id)

@@ -1,6 +1,7 @@
 from repositories.employee_repository import fetch_all_employees , post_new_employee , delete_employee  , put_employee
 from .payroll_service import PayrollService
 
+#get employee deatiles
 async def get_all_employees() :
 
     columns ,employees_data  = await fetch_all_employees()
@@ -14,6 +15,7 @@ async def get_all_employees() :
 
     return employees
 
+#create new employee and post 
 async def create_employee(employee_data):
 
     employee_details = employee_data.model_dump()
@@ -24,7 +26,7 @@ async def create_employee(employee_data):
     pf = PayrollService.calculate_pf(basic_salary)
     gross_salary = PayrollService.calculate_gross_salary(basic_salary)
 
-    
+
     salary_deatils = { "DA": da,
                         "PF": pf,
                         "GrossSalary": gross_salary}
@@ -36,12 +38,7 @@ async def create_employee(employee_data):
 
     return await post_new_employee(employee)
 
-
-async def remove_employee_byid(employee_id):
-
-    return await delete_employee(employee_id)
-
-
+#update the employee
 async def update_employee(employee_data,employee_id):
 
     employee_details = employee_data.model_dump()
@@ -63,3 +60,9 @@ async def update_employee(employee_data,employee_id):
         }
 
     return await put_employee(employee,employee_id)
+
+
+#delete the employee detail 
+async def remove_employee_byid(employee_id):
+
+    return await delete_employee(employee_id)
