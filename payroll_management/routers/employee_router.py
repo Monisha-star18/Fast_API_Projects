@@ -1,29 +1,42 @@
 from fastapi import APIRouter,Path
 
-from services.employee_service import get_all_employees , create_employee , remove_employee_byid
-from schemas.employee_schema import CreateEmployee
+
+from schemas.employee_schema import (CreateEmployee , UpdateEmployee)
+
+from services.employee_service import (
+                        get_all_employees , 
+                        create_employee ,
+                        remove_employee_byid,
+                        update_employee) 
+
 
 router = APIRouter( prefix="/api/employees")
 
 
 #get employees and salary deatils
 @router.get("/")
-def get_employees():
+async def get_employees():
     
-    employees = get_all_employees()
+    return await get_all_employees()
 
-    return employees
 
 #post the detailes 
 @router.post("/")
-def create_new_employee(employee_data : CreateEmployee):
+async def create_new_employee(employee_data : CreateEmployee):
 
-    employee_details = create_employee(employee_data)
-
-    return employee_details
+    return await create_employee(employee_data)
 
 #delect an employee
 @router.delete('/{employee_id}')
-def remove_employee(employee_id : int =Path(gt=0) ):
+async def remove_employee(employee_id : int =Path(gt=0) ):
 
-    return remove_employee_byid(employee_id)
+    return await remove_employee_byid(employee_id)
+
+#update the whole employee 
+@router.put('/{employee_id}')
+async def update_employee_detailes( 
+    employee_data :UpdateEmployee,
+    employee_id:int =Path(gt=0)
+    ):
+
+    return await update_employee(employee_data,employee_id)

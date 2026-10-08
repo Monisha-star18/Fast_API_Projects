@@ -1,9 +1,9 @@
-from repositories.employee_repository import fetch_all_employees , post_new_employee , delete_employee 
+from repositories.employee_repository import fetch_all_employees , post_new_employee , delete_employee  , put_employee
 from .payroll_service import PayrollService
 
-def get_all_employees() :
+async def get_all_employees() :
 
-    columns ,employees_data  = fetch_all_employees()
+    columns ,employees_data  = await fetch_all_employees()
 
     employees = []
 
@@ -14,26 +14,52 @@ def get_all_employees() :
 
     return employees
 
-def create_employee(employee_data):
+async def create_employee(employee_data):
 
-    basic_salary = employee_data.EmployeeBasicSalary
+    employee_details = employee_data.model_dump()
+
+    basic_salary=employee_details['EmployeeBasicSalary']
 
     da = PayrollService.calculate_da(basic_salary)
     pf = PayrollService.calculate_pf(basic_salary)
     gross_salary = PayrollService.calculate_gross_salary(basic_salary)
 
+    
+    salary_deatils = { "DA": da,
+                        "PF": pf,
+                        "GrossSalary": gross_salary}
+
     employee = {
-        "EmployeeId": employee_data.EmployeeId,
-        "EmployeeName": employee_data.EmployeeName,
-        "EmployeeBasicSalary": basic_salary,
-        "PF": pf,
-        "DA": da,
-        "GrossSalary": gross_salary
+        **employee_details,
+        **salary_deatils
     }
 
-    return post_new_employee(employee)
+    return await post_new_employee(employee)
 
 
-def remove_employee_byid(employee_id):
+async def remove_employee_byid(employee_id):
 
-    return delete_employee(employee_id)
+    return await delete_employee(employee_id)
+
+
+async def update_employee(employee_data,employee_id):
+
+    employee_details = employee_data.model_dump()
+    
+    basic_salary=employee_details['EmployeeBasicSalary']
+    
+    da = PayrollService.calculate_da(basic_salary)
+    pf = PayrollService.calculate_pf(basic_salary)
+    gross_salary = PayrollService.calculate_gross_salary(basic_salary)
+    
+        
+    salary_deatils = { "DA": da,
+                    "PF": pf,
+                    "GrossSalary": gross_salary}
+    
+    employee = {
+            **employee_details,
+            **salary_deatils
+        }
+
+    return await put_employee(employee,employee_id)
