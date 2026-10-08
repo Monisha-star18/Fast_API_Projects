@@ -119,7 +119,7 @@ async def put_employee(employee_data,employee_id):
                 updated_employee_detail =await cursor.fetchone()
 
                 if updated_employee_detail is None:
-                     return {"message" : "Employee with the id is not found "}
+                     return {"message" :f"Employee with the id {employee_id} is not found "}
 
                 await connection.commit()
 
