@@ -132,4 +132,25 @@ async def delete_employee(employee_id):
                 
     except Exception as er:
             raise EmployeeRepositoryError( f"Iusse in repositry : {er}")
+
+#get by id 
+async def fetch_employee_by_id(employee_id):
+
+    try:
+        connection = await get_connection()
+
+        async with connection:
+            async with connection.cursor() as cursor:
+
+                query = """ SELECT * FROM employees WHERE employee_id = %s """
+
+                await cursor.execute(query, (employee_id,))
                 
+                columns = [column.name for column in cursor.description]
+
+                employee_data = await cursor.fetchone()  # one row, or None
+
+                return  columns, employee_data
+
+    except Exception as er:
+        raise EmployeeRepositoryError(f"Iusse in repositry : {er}")

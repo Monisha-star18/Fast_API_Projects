@@ -6,7 +6,8 @@ from services.employee_service import (
                         get_all_employees , 
                         create_employee ,
                         remove_employee_byid,
-                        update_employee) 
+                        update_employee,
+                        get_employee_byid) 
 
 
 router = APIRouter( prefix="/api/employees")
@@ -40,3 +41,9 @@ async def update_employee_detailes(
 async def remove_employee(employee_id : int =Path(gt=0) ):
 
     return await remove_employee_byid(employee_id)
+
+#get one employee by id
+@router.get("/{employee_id}")
+async def get_employee(employee_id: int = Path(gt=0)):
+
+    return await get_employee_byid(employee_id)

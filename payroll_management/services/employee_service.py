@@ -1,5 +1,14 @@
-from repositories.employee_repository import fetch_all_employees , post_new_employee , delete_employee  , put_employee
+from repositories.employee_repository import (
+    fetch_all_employees , 
+    post_new_employee , 
+    delete_employee  , 
+    put_employee,
+    fetch_employee_by_id)
+
 from .payroll_service import PayrollService
+
+from fastapi import HTTPException
+
 
 #get employee deatiles
 async def get_all_employees() :
@@ -66,3 +75,16 @@ async def update_employee(employee_data,employee_id):
 async def remove_employee_byid(employee_id):
 
     return await delete_employee(employee_id)
+
+#get by id 
+async def get_employee_byid(employee_id):
+
+    columns, employee_data = await fetch_employee_by_id(employee_id)
+
+    if employee_data is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Employee with ID {employee_id} not found"
+        )
+
+    return dict(zip(columns, employee_data))
